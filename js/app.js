@@ -11,11 +11,14 @@ canvas.addEventListener('click', (e) =>
 function seed(numberOfParticles, root) {
   return Array(numberOfParticles)
     .fill(null)
-    .map(() => particle(
-      root,
-      resize(30, unitVector()),
-      [0, 1]
-    ));
+    .map(() => {
+      const direction = unitVector();
+
+      return particle(
+        root,
+        resize(20, direction),
+        [Math.random() * direction[0], Math.random()])
+    });
 }
 
 function cursorPosition(canvas, event) {

@@ -14,8 +14,7 @@ function unitVector() {
 }
 
 function resize(size, unitVector) {
-  const length = () => Math.floor(Math.random() * size) + 0.5;
-  return unitVector.map(basis => basis * length());
+  return unitVector.map(basis => Math.floor(basis * size * Math.random()));
 }
 
 function randomInteger(min, max) {
