@@ -1,38 +1,29 @@
-const canvas = document.getElementById('particleCanvas');
-const canvasContext = canvas.getContext('2d');
-
 function render(context, particles, pixel) {
-  const clear = () => context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  const renderParticle = (coordinates) => context.drawImage(pixel, coordinates[0], coordinates[1]);
-  const isInCanvas = isInBounds.bind(null, context.canvas);
-
   requestAnimationFrame(drawFrame.bind(null, preCalculate(particles)));
 
-  function drawFrame(worldData) {
-    clear();
-    worldData.pop().map(particle => particle.coordinates).forEach(renderParticle);
-    if (worldData.length > 0) {
-      requestAnimationFrame(drawFrame.bind(null, worldData));
+  function drawFrame(frames) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    frames
+      .shift()
+      .map(particle => particle.coordinates)
+      .forEach(coordinates => context.drawImage(pixel, coordinates[0], coordinates[1]));
+
+    if (frames.length > 0) {
+      requestAnimationFrame(drawFrame.bind(null, frames));
     }
   }
 
-  function preCalculate(particles, frameData = [particles]) {
-    const futureParticles = particles.map(move).filter(isInCanvas);
-    frameData.push(futureParticles);
-    return (futureParticles.length > 0) ? preCalculate(futureParticles, frameData) : frameData.reverse();
+  function isInBounds(particle) {
+    return (particle.coordinates[0] > 0 && particle.coordinates[0] < context.canvas.width &&
+      particle.coordinates[1] > 0 && particle.coordinates[1] < context.canvas.height);
   }
-}
 
-function isInBounds(canvas, particle) {
-  return (particle.coordinates[0] > 0 && particle.coordinates[0] < canvas.width &&
-    particle.coordinates[1] > 0 && particle.coordinates[1] < canvas.height);
-}
-
-function createPixelData(size, colour) {
-  const data = Array(size * size)
-    .fill(null)
-    .reduce(data => data.concat(colour), []);
-  return new ImageData(Uint8ClampedArray.from(data), 2);
+  function preCalculate(particles, frameData = [particles]) {
+    const futureParticles = particles.map(move).filter(isInBounds);
+    frameData.push(futureParticles);
+    return (futureParticles.length > 0) ? preCalculate(futureParticles, frameData) : frameData;
+  }
 }
 
 function createPixelImage(size, colour) {
@@ -46,9 +37,3 @@ function createPixelImage(size, colour) {
 
   return canvas;
 }
-
-render(
-  canvasContext,
-  seed(2500),
-  createPixelImage(1, 'rgba(190, 0, 210, 255)')
-);

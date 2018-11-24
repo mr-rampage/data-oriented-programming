@@ -18,13 +18,11 @@ function resize(size, unitVector) {
   return unitVector.map(basis => basis * length());
 }
 
-function seed(numberOfParticles) {
-  return Array(numberOfParticles)
-    .fill(null)
-    .map(() => particle(
-      [200, 200],
-      resize(25, unitVector()),
-      [0, 1]
-    ));
+function randomInteger(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function randomColour() {
+  return `rgba(${randomInteger(0, 255)}, ${randomInteger(0, 255)}, ${randomInteger(0, 255)}, 255)`;
 }
 
