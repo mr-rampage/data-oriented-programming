@@ -14,15 +14,15 @@ function render(context, particles, pixel) {
     }
   }
 
-  function isInBounds(particle) {
-    return (particle.coordinates[0] > 0 && particle.coordinates[0] < context.canvas.width &&
-      particle.coordinates[1] > 0 && particle.coordinates[1] < context.canvas.height);
-  }
-
   function preCalculate(particles, frameData = [particles]) {
     const futureParticles = particles.map(move).filter(isInBounds);
     frameData.push(futureParticles);
     return (futureParticles.length > 0) ? preCalculate(futureParticles, frameData) : frameData;
+
+    function isInBounds(particle) {
+      return (particle.coordinates[0] > 0 && particle.coordinates[0] < context.canvas.width &&
+        particle.coordinates[1] > 0 && particle.coordinates[1] < context.canvas.height);
+    }
   }
 }
 
