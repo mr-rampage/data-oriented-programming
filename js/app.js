@@ -1,8 +1,8 @@
 const canvas = document.getElementById('particleCanvas');
+const pixelRenderer = render.bind(null, canvas.getContext('2d'));
 
 canvas.addEventListener('click', (e) =>
-  render(
-    canvas.getContext('2d'),
+  pixelRenderer(
     seed(1000, cursorPosition(canvas, e)),
     createPixelImage(2, randomColour())
   )
