@@ -23,19 +23,6 @@ function particleLayer(container) {
     return layer;
 }
 
-function seed(numberOfParticles, root) {
-    return Array(numberOfParticles)
-        .fill(null)
-        .map(() => {
-            const direction = unitVector();
-
-            return particle(
-                root,
-                resize(20, direction),
-                [Math.random() * direction[0], Math.random()])
-        });
-}
-
 function cursorPosition(element, event) {
     const rect = element.getBoundingClientRect();
     return [event.clientX - rect.left, event.clientY - rect.top];

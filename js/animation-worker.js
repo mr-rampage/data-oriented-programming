@@ -1,9 +1,7 @@
-onmessage = function(e) {
+onmessage = function (e) {
     const width = e.data[0];
     const height = e.data[1];
     const particles = e.data[2];
-
-    const isInBounds = boundaryCheck.bind(null, width, height);
 
     postMessage(preCalculate(particles));
 
@@ -11,7 +9,7 @@ onmessage = function(e) {
         if (particles.length === 0) {
             return animationData;
         } else {
-            const nextFrame = particles.map(move).filter(isInBounds);
+            const nextFrame = particles.map(move).filter(boundaryCheck);
             return preCalculate(
                 nextFrame,
                 animationData.concat([
@@ -21,7 +19,7 @@ onmessage = function(e) {
         }
     }
 
-    function boundaryCheck(width, height, particle) {
+    function boundaryCheck(particle) {
         return (particle.coordinates[0] > 0 && particle.coordinates[0] < width &&
             particle.coordinates[1] > 0 && particle.coordinates[1] < height);
     }

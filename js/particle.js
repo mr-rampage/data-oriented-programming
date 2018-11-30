@@ -1,11 +1,17 @@
 function particle(coordinates, vector, acceleration) {
-  return {coordinates, vector, acceleration};
+    return {coordinates, vector, acceleration};
 }
 
-function move({coordinates, vector, acceleration}) {
-  return particle(
-    coordinates.map((point, index) => point + vector[index]),
-    vector.map((basis, index) => basis + acceleration[index]),
-    acceleration
-  );
+function seed(numberOfParticles, coordinates) {
+    return Array(numberOfParticles)
+        .fill(null)
+        .map(() => {
+            const direction = unitVector();
+
+            return particle(
+                coordinates,
+                resize(20, direction),
+                [Math.random() * direction[0], Math.random()])
+        });
 }
+

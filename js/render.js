@@ -3,14 +3,10 @@ const animationWorker = new Worker('js/animation-worker.js');
 function render(canvas, particles, pixel) {
     const context = canvas.getContext('2d');
 
-    if (window.Worker) {
-        animationWorker.postMessage([canvas.width, canvas.height, particles]);
-        animationWorker.onmessage = function (e) {
-            requestAnimationFrame(drawFrame(e.data));
-        };
-    } else {
-        requestAnimationFrame(drawFrame(preCalculate(particles)));
-    }
+    animationWorker.postMessage([canvas.width, canvas.height, particles]);
+    animationWorker.onmessage = function (e) {
+        requestAnimationFrame(drawFrame(e.data));
+    };
 
     function drawFrame(frames) {
         return () => {
@@ -23,25 +19,6 @@ function render(canvas, particles, pixel) {
                 canvas.remove();
             }
         }
-    }
-
-    function preCalculate(particles, animationData = []) {
-        if (particles.length === 0) {
-            return animationData;
-        } else {
-            const nextFrame = particles.map(move).filter(isInBounds);
-            return preCalculate(
-                nextFrame,
-                animationData.concat([
-                    nextFrame.map(particle => particle.coordinates)
-                ])
-            );
-        }
-    }
-
-    function isInBounds(particle) {
-        return (particle.coordinates[0] > 0 && particle.coordinates[0] < canvas.width &&
-            particle.coordinates[1] > 0 && particle.coordinates[1] < canvas.height);
     }
 }
 
