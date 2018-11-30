@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style type="text/css">
+        #particleContainer {
+            width: 100%;
+            height: 400px;
+        }
+        #particleContainer canvas {
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
-<canvas id="particleCanvas" width="800" height="400">
-</canvas>
+<div id="particleContainer"></div>
 <script type="text/javascript" src="js/utils.js"></script>
 <script type="text/javascript" src="js/particle.js"></script>
 <script type="text/javascript" src="js/render.js"></script>
