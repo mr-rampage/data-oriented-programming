@@ -1,17 +1,27 @@
+const animationWorker = new Worker('js/animation-worker.js');
+
 function render(canvas, particles, pixel) {
     const context = canvas.getContext('2d');
-    const animationData = preCalculate(particles);
-    console.info(animationData);
-    requestAnimationFrame(drawFrame.bind(null, animationData));
+
+    if (window.Worker) {
+        animationWorker.postMessage([canvas.width, canvas.height, particles]);
+        animationWorker.onmessage = function (e) {
+            requestAnimationFrame(drawFrame(e.data));
+        };
+    } else {
+        requestAnimationFrame(drawFrame(preCalculate(particles)));
+    }
 
     function drawFrame(frames) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        frames.shift().forEach(coordinates => context.drawImage(pixel, coordinates[0], coordinates[1]));
+        return () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            frames.shift().forEach(coordinates => context.drawImage(pixel, coordinates[0], coordinates[1]));
 
-        if (frames.length > 0) {
-            requestAnimationFrame(drawFrame.bind(null, frames));
-        } else {
-            canvas.remove();
+            if (frames.length > 0) {
+                requestAnimationFrame(drawFrame(frames));
+            } else {
+                canvas.remove();
+            }
         }
     }
 
